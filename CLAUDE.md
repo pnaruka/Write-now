@@ -19,7 +19,8 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 
 ### Setup screen
 - User picks a session duration: 5 / 10 / 15 / 20 min presets, or a custom value
-- Selecting a preset updates the custom input box to match
+- Selecting a preset updates the custom input box to match; typing a preset value in the custom box highlights that preset
+- Custom duration only accepts whole numbers from the input's `min` to `max` (1–120): `-`, `+`, `.`, `,` and `e` keys are blocked, non-digit pastes and drops are rejected, leading zeros are stripped (so `0` can't be entered), and a keystroke that would exceed the max is ignored. An empty box means 1 minute and is filled with `1` on blur. Saved settings are normalised to the same range when loaded
 - Idle warning threshold: slider from 2–10 s (default 4 s)
 - Audio toggle for nudge sounds
 - Hard mode toggle — suppresses Backspace and Delete in the editor
@@ -49,7 +50,7 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 - Shows: **words written**, **time writing** (total elapsed minus idle time, in `Xm XXs` format), **words per minute**
 - "Copy text" copies the full draft to clipboard
 - "Save .txt" / "Save .md" download the draft with a timestamped filename
-- "+ 1 more minute" extends the session by 1 minute, keeping the existing text and resuming the countdown immediately
+- "+ 1 more minute" extends the session by 1 minute, keeping the existing text and resuming the countdown immediately; time and idle totals carry over so the final stats cover the whole session
 - "New session" returns to the setup screen
 
 ## Key state (session.js + warning.js)
@@ -59,6 +60,7 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 | `selectedMins` | `session.js` | Duration chosen on setup screen |
 | `sessionStartTime` | `session.js` | Timestamp of first keystroke; null until then |
 | `timeExpired` | `session.js` | True once countdown hits zero |
+| `completedSecs` | `session.js` | Countdown + overtime seconds from segments before the latest "+ 1 more minute"; keeps stats covering the whole draft |
 | `totalIdleMs` | `warning.js` | Accumulated ms where warning was visible |
 | `idleStartTime` | `warning.js` | Timestamp when current idle period began |
 | `warningLevel` | `warning.js` | Current escalation level (0 = none, 1–3) |
@@ -67,7 +69,7 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 
 ## Writing time calculation
 
-Writing time = (`totalSecs` + `overtimeSecs`) − `totalIdleMs`
+Writing time = (`completedSecs` + `totalSecs` + `overtimeSecs`) − `totalIdleMs`
 
 Using the committed session duration as the base (rather than time-to-first-keystroke) means the stat reflects the full time the user set aside to write, minus any time they were idle (warning showing). Idle time is measured precisely: `idleStartTime` is set when the warning appears, and the elapsed ms is added to `totalIdleMs` when the warning is dismissed (either by a keystroke or by `endSession` calling `hideWarning`).
 

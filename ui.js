@@ -16,20 +16,67 @@ const sessionStatus = document.getElementById('session-status');
 
 // ── Setup: duration picker ────────────────────────────────────────────────────
 
-durBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    durBtns.forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedMins     = parseInt(btn.dataset.mins);
-    customMins.value = selectedMins;
+const MIN_MINS = parseInt(customMins.min, 10) || 1;
+const MAX_MINS = parseInt(customMins.max, 10) || 120;
+
+// The custom box only ever holds a whole number from MIN_MINS to MAX_MINS,
+// or is empty (which means MIN_MINS). Anything else is rejected as it's typed.
+const BLOCKED_KEYS = ['-', '+', '.', ',', 'e', 'E'];
+let lastCustomValue = customMins.value;
+
+// Normalises a stored duration (e.g. from saved settings) to a valid value.
+function toValidMins(value) {
+  const n = parseInt(value, 10);
+  if (!Number.isInteger(n) || n < MIN_MINS) return MIN_MINS;
+  return Math.min(n, MAX_MINS);
+}
+
+// Highlights the preset button matching `mins`, if any.
+function highlightPreset(mins) {
+  durBtns.forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.mins, 10) === mins);
   });
+}
+
+function setCustomMins(mins) {
+  selectedMins     = mins;
+  customMins.value = mins;
+  lastCustomValue  = customMins.value;
+  highlightPreset(mins);
+}
+
+durBtns.forEach(btn => {
+  btn.addEventListener('click', () => setCustomMins(parseInt(btn.dataset.mins, 10)));
 });
 
+// Block minus, plus, decimal point and exponent keys outright.
+customMins.addEventListener('keydown', e => {
+  if (BLOCKED_KEYS.includes(e.key)) e.preventDefault();
+});
+
+// Only allow pasting / dropping plain digits.
+customMins.addEventListener('paste', e => {
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  if (!/^\d+$/.test(text.trim())) e.preventDefault();
+});
+customMins.addEventListener('drop', e => e.preventDefault());
+
 customMins.addEventListener('input', () => {
-  if (customMins.value) {
-    durBtns.forEach(b => b.classList.remove('selected'));
-    selectedMins = parseInt(customMins.value) || 10;
-  }
+  let v = customMins.value.replace(/^0+/, '');   // no leading zeros, so no 0
+
+  if (v !== '' && !/^\d+$/.test(v)) v = lastCustomValue;               // safety net
+  if (v !== '' && parseInt(v, 10) > MAX_MINS) v = lastCustomValue;      // too big: ignore keystroke
+
+  if (customMins.value !== v) customMins.value = v;
+  lastCustomValue = v;
+
+  selectedMins = v === '' ? MIN_MINS : parseInt(v, 10);
+  highlightPreset(selectedMins);
+});
+
+// An empty box means 1 minute; show that once the user leaves the field.
+customMins.addEventListener('blur', () => {
+  if (customMins.value === '') setCustomMins(MIN_MINS);
 });
 
 // ── Setup: threshold slider ───────────────────────────────────────────────────
@@ -58,12 +105,8 @@ function saveSettings() {
 }
 
 function applySettings(s) {
-  // Duration
-  selectedMins      = s.mins;
-  customMins.value  = s.mins;
-  durBtns.forEach(b => {
-    b.classList.toggle('selected', parseInt(b.dataset.mins) === s.mins);
-  });
+  // Duration (normalised in case stored settings are invalid)
+  setCustomMins(toValidMins(s.mins));
 
   // Threshold
   threshInput.value    = s.threshold;
