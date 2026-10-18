@@ -26,6 +26,7 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 - Hard mode toggle — suppresses Backspace and Delete in the editor
 - Warning style picker: **encouraging** (default, amber/warm) or **strict** (red, no-nonsense)
 - All settings (duration, threshold, audio, hard mode, warning style) are saved to `localStorage` on session start; on return visits the setup screen is pre-filled and a **"same as last time"** quick-start button appears
+- Saved settings are read through `readSavedSettings()` → `normaliseSettings()` in `ui.js`: each field is validated on its own and falls back to `DEFAULT_SETTINGS` if missing or invalid (e.g. settings from older versions without `warningMode`). Corrupt JSON or unavailable storage is treated as "no saved settings", and a failed save never blocks starting a session
 
 ### Editor
 - Fullscreen textarea, max-width 720 px, dark theme

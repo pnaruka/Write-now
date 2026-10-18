@@ -38,8 +38,8 @@
 ## ~~9. Validate custom duration~~ ✓
 ~~The custom minutes input accepts `0` and negative values (`-5` gives a negative countdown). Clamp it to the input's `min`/`max` (1–120) and fall back to a sane default on invalid input.~~
 
-## 10. Harden quick-start settings loading
-The "same as last time" handler calls `JSON.parse` without a try/catch, and settings saved by older versions may be missing fields (e.g. `warningMode`), which makes the first warning throw. Parse safely and merge saved settings over defaults.
+## ~~10. Harden quick-start settings loading~~ ✓
+~~The "same as last time" handler calls `JSON.parse` without a try/catch, and settings saved by older versions may be missing fields (e.g. `warningMode`), which makes the first warning throw. Parse safely and merge saved settings over defaults.~~
 
 ## 11. Remove stale comments
 - `ui.js`: the "keydown already handles hard-mode + idle reset above via the combined listener" comment describes code that doesn't exist.

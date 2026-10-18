@@ -94,33 +94,74 @@ audioCheck2.addEventListener('change', () => audioCheck.checked  = audioCheck2.c
 
 const SETTINGS_KEY = 'writenow-settings';
 
-function saveSettings() {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({
-    mins:        selectedMins,
-    threshold:   threshInput.value,
-    audio:       audioCheck.checked,
-    hardMode:    hardMode,
-    warningMode: warningMode
-  }));
+const DEFAULT_SETTINGS = {
+  mins:        10,
+  threshold:   4,
+  audio:       true,
+  hardMode:    false,
+  warningMode: 'encouraging'
+};
+
+// Builds a complete, valid settings object from whatever was stored.
+// Each field is checked on its own, so a missing or bad field (e.g. from an
+// older version of the app) falls back to its default without losing the rest.
+function normaliseSettings(saved) {
+  const d = DEFAULT_SETTINGS;
+
+  const threshMin = parseInt(threshInput.min, 10);
+  const threshMax = parseInt(threshInput.max, 10);
+  const threshold = parseInt(saved.threshold, 10);
+
+  return {
+    mins:        saved.mins === undefined ? d.mins : toValidMins(saved.mins),
+    threshold:   threshold >= threshMin && threshold <= threshMax ? threshold : d.threshold,
+    audio:       typeof saved.audio    === 'boolean' ? saved.audio    : d.audio,
+    hardMode:    typeof saved.hardMode === 'boolean' ? saved.hardMode : d.hardMode,
+    warningMode: Object.hasOwn(nudgeMessages, saved.warningMode) ? saved.warningMode : d.warningMode
+  };
 }
 
-function applySettings(s) {
-  // Duration (normalised in case stored settings are invalid)
-  setCustomMins(toValidMins(s.mins));
+// Returns the saved settings, or null if there are none or they can't be read.
+// localStorage itself can throw (e.g. storage disabled), as can JSON.parse.
+function readSavedSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (typeof saved !== 'object' || saved === null || Array.isArray(saved)) return null;
+    return normaliseSettings(saved);
+  } catch (e) {
+    return null;
+  }
+}
 
-  // Threshold
-  threshInput.value    = s.threshold;
+function saveSettings() {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+      mins:        selectedMins,
+      threshold:   parseInt(threshInput.value, 10),
+      audio:       audioCheck.checked,
+      hardMode:    hardMode,
+      warningMode: warningMode
+    }));
+  } catch (e) {
+    // Storage unavailable or full — the session still starts, settings just aren't remembered.
+  }
+}
+
+// Expects a normalised settings object (see normaliseSettings).
+function applySettings(s) {
+  setCustomMins(s.mins);
+
+  threshInput.value     = s.threshold;
   threshVal.textContent = s.threshold + 's pause triggers warning';
 
-  // Audio
   audioCheck.checked  = s.audio;
   audioCheck2.checked = s.audio;
 
-  // Hard mode
   hardMode = s.hardMode;
   document.getElementById('hard-mode').checked = s.hardMode;
 
-  // Warning mode
   warningMode = s.warningMode;
   document.querySelectorAll('.mode-btn').forEach(b => {
     b.classList.toggle('selected', b.dataset.mode === s.warningMode);
@@ -128,13 +169,10 @@ function applySettings(s) {
 }
 
 function loadSettings() {
-  const raw = localStorage.getItem(SETTINGS_KEY);
-  if (!raw) return;
-  try {
-    const s = JSON.parse(raw);
-    applySettings(s);
-    document.getElementById('btn-quickstart').style.display = 'inline-block';
-  } catch (e) {}
+  const s = readSavedSettings();
+  if (!s) return;
+  applySettings(s);
+  document.getElementById('btn-quickstart').style.display = 'inline-block';
 }
 
 // ── Session start / end buttons ───────────────────────────────────────────────
@@ -145,9 +183,13 @@ document.getElementById('btn-start').addEventListener('click', () => {
 });
 
 document.getElementById('btn-quickstart').addEventListener('click', () => {
-  const raw = localStorage.getItem(SETTINGS_KEY);
-  if (!raw) return;
-  applySettings(JSON.parse(raw));
+  const s = readSavedSettings();
+  if (!s) {
+    // Saved settings vanished or became unreadable since page load.
+    document.getElementById('btn-quickstart').style.display = 'none';
+    return;
+  }
+  applySettings(s);
   startSession();
 });
 
