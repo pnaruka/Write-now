@@ -7,7 +7,7 @@ A distraction-free writing app that keeps you writing without stopping to think.
 - **Time-boxed sessions** — 5, 10, 15 or 20 minute presets, or a custom duration
 - **Idle warnings** — fire after a configurable 2–10 s of no typing and escalate through three levels (vignette pulse, sound, and in strict mode a screen shake)
 - **Two warning styles** — *encouraging* (warm amber, gentle tones) or *strict* (red, no-nonsense)
-- **Hard mode** — disables Backspace and Delete so you can't second-guess yourself
+- **Hard mode** — no erasing: Backspace, Delete, cut, undo and typing over a selection are all blocked, so you can't second-guess yourself
 - **Overtime** — when the timer hits zero, keep writing as long as you like; the session ends after 5 s of inactivity or when you click "End session"
 - **Session stats** — words written, time spent writing (excluding idle time) and words per minute
 - **Export** — copy to clipboard or save as `.txt` / `.md`

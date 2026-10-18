@@ -206,17 +206,58 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
   });
 });
 
-// ── Hard mode: suppress backspace / delete ────────────────────────────────────
+// ── Hard mode: nothing already written can be removed or replaced ─────────────
+//
+// Uses `beforeinput`, which fires for every kind of edit (keys, cut, drag-and-
+// drop, undo, autocorrect), rather than watching individual keys.
 
 let hardMode = false;
 document.getElementById('hard-mode').addEventListener('change', e => {
   hardMode = e.target.checked;
 });
 
-editor.addEventListener('keydown', e => {
-  if (hardMode && (e.key === 'Backspace' || e.key === 'Delete')) {
+// Inserts text just after the current selection, leaving the selection intact.
+function insertAfterSelection(text) {
+  editor.setRangeText(text, editor.selectionEnd, editor.selectionEnd, 'end');
+  editor.dispatchEvent(new Event('input'));  // update word count + idle timer
+}
+
+editor.addEventListener('beforeinput', e => {
+  if (!hardMode) return;
+
+  const type = e.inputType;
+
+  // Backspace, Delete, word/line deletes, cut, dragging text out, undo/redo,
+  // and spellcheck/autocorrect replacements all remove existing text.
+  if (type.startsWith('delete') || type.startsWith('history') || type === 'insertReplacementText') {
     e.preventDefault();
+    return;
   }
+
+  // Typing over a selection would replace it. Instead, keep the selected text
+  // and insert after it, so typing never just "does nothing". (Dropped text
+  // lands at the drop point, so it never replaces the selection.)
+  if (editor.selectionStart !== editor.selectionEnd && type !== 'insertFromDrop') {
+    e.preventDefault();
+    if (type === 'insertText' && e.data) insertAfterSelection(e.data);
+    else if (type === 'insertLineBreak' || type === 'insertParagraph') insertAfterSelection('\n');
+  }
+});
+
+// Pasting over a selection: same idea. Handled here because textareas don't
+// expose the pasted text on `beforeinput`.
+editor.addEventListener('paste', e => {
+  if (!hardMode || editor.selectionStart === editor.selectionEnd) return;
+  e.preventDefault();
+  const text = e.clipboardData.getData('text/plain');
+  if (text) insertAfterSelection(text);
+});
+
+// Fallback for browsers that don't fire cancelable `beforeinput` for undo/redo.
+editor.addEventListener('keydown', e => {
+  if (!hardMode || !(e.ctrlKey || e.metaKey)) return;
+  const key = e.key.toLowerCase();
+  if (key === 'z' || key === 'y') e.preventDefault();
 });
 
 // ── Editor: track writing and reset idle timer ────────────────────────────────

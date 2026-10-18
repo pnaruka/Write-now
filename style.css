@@ -5,6 +5,7 @@ body {
   color: #e8e3d9;
   font-family: 'Georgia', serif;
   height: 100vh;
+  height: 100dvh;  /* excludes mobile browser toolbars where supported */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -56,6 +57,8 @@ body {
   z-index: 11;
 }
 #nudge span {
+  padding: 0 24px;
+  text-align: center;
   font-size: 1.5rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -105,10 +108,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 32px;
+  padding: 24px 16px;
+  overflow-y: auto;
   z-index: 50;
 }
+/* Auto margins centre the content vertically when it fits, but (unlike
+   justify-content: center) never push it off the top when it doesn't. */
+#setup-screen > :first-child { margin-top: auto; }
+#setup-screen > :last-child  { margin-bottom: auto; }
 #setup-screen h2 {
   font-size: 1rem;
   font-weight: normal;
@@ -339,13 +348,14 @@ body {
 /* ── stats pane ── */
 #stats-pane {
   width: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   border-left: 0px solid #1e1e1e;
   transition: width 0.5s ease, border-width 0.5s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 32px;
   flex-shrink: 0;
 }
@@ -354,6 +364,7 @@ body {
   border-left-width: 1px;
 }
 .stats-inner {
+  margin: auto 0;  /* centred when it fits, scrollable when it doesn't */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -376,6 +387,7 @@ body {
   letter-spacing: 0.02em;
   line-height: 1;
 }
+#done-writing-time { font-size: 2rem; }
 .stat-lbl {
   font-size: 0.7rem;
   color: #3a3a3a;
@@ -428,4 +440,77 @@ body {
   font-size: 0.72rem;
   color: #2e2e2e;
   flex-shrink: 0;
+}
+
+/* ── responsive ── */
+
+/* Phones (portrait) */
+@media (max-width: 600px) {
+  #setup-screen { gap: 24px; }
+  #setup-screen h2 { font-size: 0.85rem; letter-spacing: 0.18em; text-align: center; }
+  .duration-grid { gap: 8px; width: 100%; max-width: 360px; }
+  .dur-btn { min-width: 0; padding: 12px 4px; font-size: 0.95rem; }
+  .setup-controls { flex-direction: column; gap: 14px; }
+  .setup-controls input[type=range] { width: 120px; }
+
+  #topbar { padding: 10px 16px; gap: 10px; }
+  #topbar h1 { font-size: 0.85rem; letter-spacing: 0.15em; }
+  .stats { gap: 12px; }
+  #btn-end { padding: 5px 10px; }
+
+  #editor { padding: 24px 16px 48px; font-size: 1.05rem; line-height: 1.75; }
+
+  #vignette                        { box-shadow: inset 0 0 60px 30px rgba(200, 30, 30, 0.55); }
+  #vignette.encouraging            { box-shadow: inset 0 0 60px 30px rgba(200, 140, 30, 0.5); }
+  #nudge span                      { font-size: 1.2rem; }
+  #nudge.level-3 span              { font-size: 1.6rem; }
+  #nudge.encouraging.level-3 span  { font-size: 1.2rem; }
+
+  #bottombar { padding: 8px 16px; }
+  #bottombar span:first-child { display: none; }
+
+  /* Stats pane becomes a bottom sheet instead of a side panel */
+  #main { flex-direction: column; }
+  #stats-pane {
+    width: 100%;
+    max-height: 0;
+    border-left: none;
+    border-top: 0 solid #1e1e1e;
+    transition: max-height 0.5s ease, border-width 0.5s ease;
+  }
+  #stats-pane.show {
+    width: 100%;
+    max-height: 60%;
+    border-left-width: 0;
+    border-top-width: 1px;
+  }
+  .stats-inner {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 8px;
+    padding: 20px 16px;
+  }
+  .stats-title, .stats-actions { grid-column: 1 / -1; }
+  .stats-title { text-align: center; }
+  .stat-divider { display: none; }
+  .stat-num, #done-writing-time { font-size: 1.6rem; }
+  .stat-lbl { font-size: 0.6rem; letter-spacing: 0.08em; }
+  .stats-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stats-actions button { padding: 10px 6px; }
+  .stats-actions button.primary { grid-column: span 3; }
+}
+
+/* Very narrow phones: drop the title to make room for the stats */
+@media (max-width: 380px) {
+  #topbar h1 { display: none; }
+}
+
+/* Short screens (phones in landscape) */
+@media (max-height: 500px) {
+  #setup-screen { gap: 16px; }
+  #editor { padding-top: 16px; padding-bottom: 32px; }
+  .stats-inner { gap: 14px; padding: 20px 24px; }
+  .stat-num { font-size: 2rem; }
+  #done-writing-time { font-size: 1.4rem; }
 }
