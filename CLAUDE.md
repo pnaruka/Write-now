@@ -54,6 +54,13 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 - "+ 1 more minute" extends the session by 1 minute, keeping the existing text and resuming the countdown immediately; time and idle totals carry over so the final stats cover the whole session
 - "New session" returns to the setup screen
 
+### Responsive layout
+Breakpoints live at the bottom of `style.css`:
+- **≤ 600 px wide (phones)** — setup controls stack vertically, tighter topbar/editor padding, bottom-bar tagline hidden, smaller vignette and nudge text. The stats pane becomes a **bottom sheet** (`#main` switches to a column; the pane animates `max-height` instead of `width`) with the three stats in a row and the buttons in a grid
+- **≤ 380 px wide** — the "Write Now" title in the topbar is hidden to make room
+- **≤ 500 px tall (landscape phones)** — reduced gaps and stat sizes
+- At every size the setup screen and stats pane scroll when their content doesn't fit; they're centred with auto margins rather than `justify-content: center`, so nothing gets pushed off the top. `body` uses `100dvh` so mobile browser toolbars don't hide the bottom bar
+
 ## Key state (session.js + warning.js)
 
 | Variable | Lives in | Purpose |
