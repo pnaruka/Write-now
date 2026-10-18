@@ -1,6 +1,7 @@
-# Write Now
+# [Write Now](https://pnaruka.github.io/Write-now/)
 
 A distraction-free writing app that keeps you writing without stopping to think. Pick a session length and start typing — if you go idle, a warning nudges you back, getting more insistent the longer you stall. When time runs out you can keep going in overtime, then grab your text and stats at the end.
+![alt text](image.png)
 
 ## Features
 
