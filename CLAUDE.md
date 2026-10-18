@@ -23,7 +23,7 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 - Custom duration only accepts whole numbers from the input's `min` to `max` (1–120): `-`, `+`, `.`, `,` and `e` keys are blocked, non-digit pastes and drops are rejected, leading zeros are stripped (so `0` can't be entered), and a keystroke that would exceed the max is ignored. An empty box means 1 minute and is filled with `1` on blur. Saved settings are normalised to the same range when loaded
 - Idle warning threshold: slider from 2–10 s (default 4 s)
 - Audio toggle for nudge sounds
-- Hard mode toggle — suppresses Backspace and Delete in the editor
+- Hard mode toggle — nothing already written can be removed or replaced (see *Hard mode* below)
 - Warning style picker: **encouraging** (default, amber/warm) or **strict** (red, no-nonsense)
 - All settings (duration, threshold, audio, hard mode, warning style) are saved to `localStorage` on session start; on return visits the setup screen is pre-filled and a **"same as last time"** quick-start button appears
 - Saved settings are read through `readSavedSettings()` → `normaliseSettings()` in `ui.js`: each field is validated on its own and falls back to `DEFAULT_SETTINGS` if missing or invalid (e.g. settings from older versions without `warningMode`). Corrupt JSON or unavailable storage is treated as "no saved settings", and a failed save never blocks starting a session
@@ -39,6 +39,13 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 - Only real text input (the `input` event) resets the idle timer — modifier keys, arrows, and Ctrl combos are ignored
 - **Encouraging mode** — amber vignette, soft ascending tone at all levels, messages: *"Keep going…" / "You've got this." / "Write first, think later."*
 - **Strict mode** — red vignette, escalating audio, messages: *"Write." / "Stop stalling." / "Write. Now."*
+
+### Hard mode
+Implemented with the `beforeinput` event in `ui.js`, so it covers every way of editing rather than specific keys:
+- Any `delete*` input type (Backspace, Delete, word/line deletes, cut, dragging text out), `history*` (undo/redo) and `insertReplacementText` (spellcheck/autocorrect) is cancelled. Cut still copies to the clipboard; dragging text within the editor copies instead of moving
+- Typing, Enter or pasting while text is selected doesn't replace the selection — the new text is inserted right after it (`insertAfterSelection`). Paste is handled in the `paste` event because textareas don't expose pasted text on `beforeinput`
+- A `keydown` fallback also blocks Ctrl/Cmd+Z and Ctrl/Cmd+Y
+- Known limit: on mobile keyboards, predictive text that rewrites the current word during composition can't be cancelled by the browser
 
 ### Overtime mode
 - When the countdown hits zero: audio chime plays, timer flips to `+0:00` and counts up in green
@@ -73,7 +80,7 @@ Breakpoints live at the bottom of `style.css`:
 | `idleStartTime` | `warning.js` | Timestamp when current idle period began |
 | `warningLevel` | `warning.js` | Current escalation level (0 = none, 1–3) |
 | `warningMode` | `warning.js` | `'encouraging'` (default) or `'strict'` |
-| `hardMode` | `ui.js` | True when hard mode (no backspace) is enabled |
+| `hardMode` | `ui.js` | True when hard mode (no erasing) is enabled |
 
 ## Writing time calculation
 

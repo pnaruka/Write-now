@@ -54,5 +54,5 @@
 ## ~~14. Responsive layout~~ ✓
 ~~`style.css` has no `@media` rules. Add breakpoints so the setup screen, editor, topbar and stats pane work on narrow (phone/tablet) screens — e.g. stack the stats pane below the editor instead of sliding in from the right.~~
 
-## 15. Close hard-mode loopholes
-Hard mode only blocks the Backspace and Delete keys. Text can still be removed by cutting (Ctrl+X / context menu), by selecting text and typing over it, or by drag-and-drop. Use the `beforeinput` event to cancel deleting input types (`deleteContentBackward`, `deleteByCut`, `deleteByDrag`, etc.) and any insertion that would replace a selection.
+## ~~15. Close hard-mode loopholes~~ ✓
+~~Hard mode only blocks the Backspace and Delete keys. Text can still be removed by cutting (Ctrl+X / context menu), by selecting text and typing over it, or by drag-and-drop. Use the `beforeinput` event to cancel deleting input types (`deleteContentBackward`, `deleteByCut`, `deleteByDrag`, etc.) and any insertion that would replace a selection.~~
