@@ -35,8 +35,8 @@
 ## ~~8. Fix stats after "+ 1 more minute"~~ ✓
 ~~`extendSession()` resets `totalSecs` to 60 and clears `totalIdleMs`, but the word count still covers the whole draft, so words per minute is wildly inflated after an extension. Accumulate session time and idle time across extensions instead of resetting them.~~
 
-## 9. Validate custom duration
-The custom minutes input accepts `0` and negative values (`-5` gives a negative countdown). Clamp it to the input's `min`/`max` (1–120) and fall back to a sane default on invalid input.
+## ~~9. Validate custom duration~~ ✓
+~~The custom minutes input accepts `0` and negative values (`-5` gives a negative countdown). Clamp it to the input's `min`/`max` (1–120) and fall back to a sane default on invalid input.~~
 
 ## 10. Harden quick-start settings loading
 The "same as last time" handler calls `JSON.parse` without a try/catch, and settings saved by older versions may be missing fields (e.g. `warningMode`), which makes the first warning throw. Parse safely and merge saved settings over defaults.

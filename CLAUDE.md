@@ -19,7 +19,8 @@ Script load order in `index.html`: `audio.js` → `warning.js` → `session.js` 
 
 ### Setup screen
 - User picks a session duration: 5 / 10 / 15 / 20 min presets, or a custom value
-- Selecting a preset updates the custom input box to match
+- Selecting a preset updates the custom input box to match; typing a preset value in the custom box highlights that preset
+- Custom duration only accepts whole numbers from the input's `min` to `max` (1–120): `-`, `+`, `.`, `,` and `e` keys are blocked, non-digit pastes and drops are rejected, leading zeros are stripped (so `0` can't be entered), and a keystroke that would exceed the max is ignored. An empty box means 1 minute and is filled with `1` on blur. Saved settings are normalised to the same range when loaded
 - Idle warning threshold: slider from 2–10 s (default 4 s)
 - Audio toggle for nudge sounds
 - Hard mode toggle — suppresses Backspace and Delete in the editor
