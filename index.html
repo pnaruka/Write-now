@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Write Now</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="vignette"></div>
+  <div id="nudge"><span>Keep Writing</span></div>
+
+  <!-- Setup screen -->
+  <div id="setup-screen">
+    <h2>How long will you write?</h2>
+    <div class="duration-grid">
+      <button class="dur-btn" data-mins="5">5 min</button>
+      <button class="dur-btn selected" data-mins="10">10 min</button>
+      <button class="dur-btn" data-mins="15">15 min</button>
+      <button class="dur-btn" data-mins="20">20 min</button>
+    </div>
+    <div class="custom-row">
+      or
+      <input type="number" id="custom-mins" min="1" max="120" value="10" />
+      <span>minutes</span>
+    </div>
+    <div class="setup-controls">
+      <label>
+        <span id="threshold-dot"></span>
+        <input type="range" id="thresh" min="2" max="10" value="4" step="1" />
+        <span id="thresh-val">4s pause triggers warning</span>
+      </label>
+      <label>🔈 <input type="checkbox" id="audio-on" checked /></label>
+      <label><input type="checkbox" id="hard-mode" /> hard mode — no backspace</label>
+    </div>
+    <div class="mode-row">
+      <span class="mode-label">warning style</span>
+      <button class="mode-btn selected" data-mode="encouraging">encouraging</button>
+      <button class="mode-btn" data-mode="strict">strict</button>
+    </div>
+    <button id="btn-start">Begin</button>
+    <button id="btn-quickstart">same as last time</button>
+    <span class="setup-hint">you can keep writing after time runs out</span>
+  </div>
+
+  <!-- Main UI -->
+  <div id="topbar">
+    <h1>Write Now</h1>
+    <div class="stats">
+      <span id="stat-words">0 words</span>
+      <span id="stat-timer">—</span>
+    </div>
+    <div class="topbar-controls">
+      <label>🔈 <input type="checkbox" id="audio-on-2" checked /></label>
+      <button id="btn-end">End session</button>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="editor-pane">
+      <textarea id="editor" spellcheck="false"
+        placeholder="Start writing. Don't stop. Don't think."></textarea>
+    </div>
+    <div id="stats-pane">
+      <div class="stats-inner">
+        <div class="stats-title">Session complete</div>
+        <div class="stat-block">
+          <div class="stat-num" id="done-words">—</div>
+          <div class="stat-lbl">words written</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-block">
+          <div class="stat-num" id="done-writing-time" style="font-size:2rem;">—</div>
+          <div class="stat-lbl">time writing</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num" id="done-wpm">—</div>
+          <div class="stat-lbl">words per minute</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stats-actions">
+          <button id="btn-copy">Copy text</button>
+          <button id="btn-save-txt">Save .txt</button>
+          <button id="btn-save-md">Save .md</button>
+          <button class="primary" id="btn-extend">+ 1 more minute</button>
+          <button class="primary" id="btn-new-session">New session</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bottombar">
+    <span>write without stopping — just let it flow</span>
+    <span id="session-status">—</span>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="warning.js"></script>
+  <script src="session.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
