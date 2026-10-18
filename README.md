@@ -18,8 +18,8 @@ A distraction-free writing app that keeps you writing without stopping to think.
 There's no build step and no dependencies. Clone the repo and open `index.html` in any modern browser:
 
 ```bash
-git clone <repo-url>
-cd write-now
+git clone https://github.com/pnaruka/Write-now.git
+cd Write-now
 ```
 
 Then double-click `index.html`, or serve the folder locally if you prefer:

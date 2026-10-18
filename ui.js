@@ -230,8 +230,6 @@ editor.addEventListener('input', () => {
   resetIdleTimer();  // only real text input resets the idle timer
 });
 
-// keydown already handles hard-mode + idle reset above via the combined listener
-
 // ── Post-session: save as file ───────────────────────────────────────────────
 
 function downloadText(ext) {

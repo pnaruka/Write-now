@@ -12,7 +12,7 @@ function isAudioEnabled() {
   return document.getElementById('audio-on').checked;
 }
 
-// Soft descending tone — played when the idle warning fires.
+// Level 1 (strict mode) — soft descending tone.
 function playNudge() {
   if (!isAudioEnabled()) return;
   try {
@@ -50,7 +50,7 @@ function playNudgeGentle() {
   } catch (e) {}
 }
 
-// Level 2 — urgent double descending tone.
+// Level 2 (strict mode) — urgent double descending tone.
 function playNudge2() {
   if (!isAudioEnabled()) return;
   try {
@@ -72,7 +72,7 @@ function playNudge2() {
   } catch (e) {}
 }
 
-// Level 3 — rapid triple sine nudge, insistent but not harsh.
+// Level 3 (strict mode) — rapid triple sine nudge, insistent but not harsh.
 function playNudge3() {
   if (!isAudioEnabled()) return;
   try {

@@ -1,14 +1,16 @@
-// Manages the idle warning overlay (red vignette + "Keep Writing" text)
-// and tracks idle time for accurate writing-time stats.
+// Manages the idle warning overlay (vignette + nudge message) and tracks
+// idle time for accurate writing-time stats.
 //
 // Escalation levels (each fires after one additional threshold interval):
-//   1 — soft pulse + nudge tone
-//   2 — brighter pulse + urgent double-tone
-//   3 — screen shake (strict) or strong pulse (encouraging) + triple burst
+//   1 — soft vignette pulse
+//   2 — faster, brighter pulse
+//   3 — screen shake (strict) or strong pulse, no shake (encouraging)
 //
 // Warning modes:
-//   strict      — red, harsh, no-nonsense messages
-//   encouraging — amber, warm, supportive messages
+//   strict      — red vignette, escalating descending tones
+//                 (playNudge / playNudge2 / playNudge3), blunt messages
+//   encouraging — amber vignette, the same gentle ascending tone at every
+//                 level (playNudgeGentle), supportive messages
 
 const vignette    = document.getElementById('vignette');
 const nudge       = document.getElementById('nudge');

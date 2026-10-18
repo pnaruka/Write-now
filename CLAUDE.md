@@ -76,7 +76,7 @@ Using the committed session duration as the base (rather than time-to-first-keys
 
 ## Audio
 
-Both sounds use the Web Audio API with a lazily initialised `AudioContext` (required by browser autoplay policy — context is created on first user interaction).
+All sounds use the Web Audio API with a lazily initialised `AudioContext` (required by browser autoplay policy — context is created on first user interaction).
 
 - **Nudge gentle** (`playNudgeGentle`): soft ascending sine 440 → 600 Hz, 0.7 s — used for all levels in encouraging mode
 - **Nudge L1** (`playNudge`): single descending sine 440 → 300 Hz, 0.8 s
