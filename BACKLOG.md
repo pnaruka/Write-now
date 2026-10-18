@@ -26,8 +26,8 @@
 
 ~~User picks their preferred mode on the setup screen.~~
 
-~~## 6. Extend session~~
-~~When the session ends, add an "Extend session" option in the stats pane. Clicking it resumes with a fresh duration (same as the original), keeping the existing text intact and resetting the countdown without clearing the editor.~~
+## ~~6. Extend session~~ ✓
+~~When the session ends, add a "+ 1 more minute" option in the stats pane. Clicking it extends the session by 1 minute, keeping the existing text intact and resuming the countdown without clearing the editor.~~
 
 ## ~~7. Add README and .gitignore~~ ✓
 ~~Add a `README.md` describing the app, its features, how to run it and the project structure. Add a `.gitignore` covering OS, editor and log files.~~
@@ -38,18 +38,18 @@
 ## ~~9. Validate custom duration~~ ✓
 ~~The custom minutes input accepts `0` and negative values (`-5` gives a negative countdown). Clamp it to the input's `min`/`max` (1–120) and fall back to a sane default on invalid input.~~
 
-## 10. Harden quick-start settings loading
-The "same as last time" handler calls `JSON.parse` without a try/catch, and settings saved by older versions may be missing fields (e.g. `warningMode`), which makes the first warning throw. Parse safely and merge saved settings over defaults.
+## ~~10. Harden quick-start settings loading~~ ✓
+~~The "same as last time" handler calls `JSON.parse` without a try/catch, and settings saved by older versions may be missing fields (e.g. `warningMode`), which makes the first warning throw. Parse safely and merge saved settings over defaults.~~
 
-## 11. Remove stale comments
-- `ui.js`: the "keydown already handles hard-mode + idle reset above via the combined listener" comment describes code that doesn't exist.
-- `warning.js`: the header describes only the red vignette; update it to cover the amber encouraging mode.
+## ~~11. Remove stale comments~~ ✓
+- ~~`ui.js`: the "keydown already handles hard-mode + idle reset above via the combined listener" comment describes code that doesn't exist.~~
+- ~~`warning.js`: the header describes only the red vignette; update it to cover the amber encouraging mode.~~
 
-## 12. Fix README clone instructions
-Replace the `<repo-url>` placeholder with `https://github.com/pnaruka/Write-now.git` and change `cd write-now` to `cd Write-now`.
+## ~~12. Fix README clone instructions~~ ✓
+~~Replace the `<repo-url>` placeholder with `https://github.com/pnaruka/Write-now.git` and change `cd write-now` to `cd Write-now`.~~
 
-## 13. Update backlog item 6
-Item 6 says the extension uses the same duration as the original; the shipped feature extends by 1 minute. Reword it to match, and add the ✓.
+## ~~13. Update backlog item 6~~ ✓
+~~Item 6 says the extension uses the same duration as the original; the shipped feature extends by 1 minute. Reword it to match, and add the ✓.~~
 
 ## 14. Responsive layout
 `style.css` has no `@media` rules. Add breakpoints so the setup screen, editor, topbar and stats pane work on narrow (phone/tablet) screens — e.g. stack the stats pane below the editor instead of sliding in from the right.
