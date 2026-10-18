@@ -32,8 +32,8 @@
 ## ~~7. Add README and .gitignore~~ ✓
 ~~Add a `README.md` describing the app, its features, how to run it and the project structure. Add a `.gitignore` covering OS, editor and log files.~~
 
-## 8. Fix stats after "+ 1 more minute"
-`extendSession()` resets `totalSecs` to 60 and clears `totalIdleMs`, but the word count still covers the whole draft, so words per minute is wildly inflated after an extension. Accumulate session time and idle time across extensions instead of resetting them.
+## ~~8. Fix stats after "+ 1 more minute"~~ ✓
+~~`extendSession()` resets `totalSecs` to 60 and clears `totalIdleMs`, but the word count still covers the whole draft, so words per minute is wildly inflated after an extension. Accumulate session time and idle time across extensions instead of resetting them.~~
 
 ## 9. Validate custom duration
 The custom minutes input accepts `0` and negative values (`-5` gives a negative countdown). Clamp it to the input's `min`/`max` (1–120) and fall back to a sane default on invalid input.

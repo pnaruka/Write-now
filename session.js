@@ -8,6 +8,7 @@ let selectedMins     = 10;
 let totalSecs        = 0;
 let remainingSecs    = 0;
 let overtimeSecs     = 0;
+let completedSecs    = 0;     // countdown + overtime from segments before the latest extension
 let timeExpired      = false;
 let sessionStartTime = null;  // timestamp of first keystroke
 
@@ -57,6 +58,7 @@ function startSession() {
   totalSecs        = selectedMins * 60;
   remainingSecs    = totalSecs;
   overtimeSecs     = 0;
+  completedSecs    = 0;
   timeExpired      = false;
   sessionStartTime = null;
   resetIdleTracking();
@@ -87,12 +89,14 @@ function extendSession() {
   clearInterval(overtimeTimer);
   clearTimeout(idleTimer);
 
+  // Carry the finished segment's time forward so stats cover the whole draft.
+  // Idle time (totalIdleMs) is intentionally NOT reset for the same reason.
+  completedSecs   += totalSecs + overtimeSecs;
+
   totalSecs        = 60; // always extend by 1 minute
   remainingSecs    = totalSecs;
   overtimeSecs     = 0;
   timeExpired      = false;
-  sessionStartTime = Date.now();
-  resetIdleTracking();
 
   document.getElementById('stats-pane').classList.remove('show');
   document.getElementById('stat-timer').textContent = formatTime(1, 0);
@@ -120,7 +124,8 @@ function endSession() {
   clearTimeout(idleTimer);
   hideWarning();  // flushes any open idle period into totalIdleMs
 
-  const writingMs  = Math.max(0, (totalSecs + overtimeSecs) * 1000 - totalIdleMs);
+  const sessionSecs = completedSecs + totalSecs + overtimeSecs;
+  const writingMs   = Math.max(0, sessionSecs * 1000 - totalIdleMs);
   const writingMins = writingMs / 60000;
 
   const text  = document.getElementById('editor').value;
